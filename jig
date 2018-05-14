@@ -4,10 +4,8 @@ coerase <'jig'NB. clear previous jig variables, helps in updates
 cocurrent'jig' NB. Set the defining locale as jig
 coinsert 'jhs'
 
-NB.SCALE=:1 NB. display zoom
 FONT=: 'menlo' NB. options to be menlo for looks and unifont for spacing of unprintables
 FM=: 0
-MT=: 0 0$0
 JIG=:1 NB. Flag to turn jig on and off
 LOC=: 'base' NB. set initially to base - reset to current locale when jig is run
 
@@ -38,7 +36,7 @@ vgalt=: 4 : 0
 '<rect ';'stroke="white" fill="#fff"';'" width="';(10.5+ 9.59 * size * {: $ ": y);'" height="';(20 * size * rows);'"></rect>',,'<text font-family="courier" style="',"1(x{:: 'fill:red; stroke-width:0.7;';'font-size:1.5em; fill:gold; stroke-width:0.5; stroke:black;';'font-size:1.5em; fill:purple; stroke-width:0.2;';'font-size:1.5em; fill:blue; stroke-width:0.4;'),"1'" y="',"1( cnv  ,. 18*(size=.1 + 0.5 * x ~: 0) * >: i. rows=.{. $ ,:^:(2>#@$) y),"1'">',"1 (":y) ,"1 '</text>'
 )
 
-vg=: 3 : 0 NB. selects correct parsing depending on type and if empty shape
+vg=: 3 : 0 NB. selects correct parsing depending on type and if empty shape x is symbol;box y is string to display
 (0;1) vg y
 :
 select. ( 0 e. $ y) {:: (typ=. datatype y);'z'
@@ -59,7 +57,7 @@ end.
 )
 
 zerosvg=: 4 : 0 NB. empty shapes case for all types
-'typ s'=.x
+'typ s'=.x NB. typ is type of empty shape, s is flag indicating symbol type
 if. s do. 34;32;'<rect x="15.5" y="7" width="14.39" height="18" stroke="red" fill="white" rx="2"></rect><title>',(30#'='),CR,' UTF-8 : 0',CR,(30#'='),'</title></rect><text font-family="',FONT,'" font-size="0.8em" x="18.5" y="20"> </text>' NB. case for s: 0{a.  which has shape 0
       else.tt=. '<title>',(30#'='),CR,(' Type : ',typ),CR,(' Shape : ',(":$y)),CR,(30#'='),'</title>'
            ('<g><rect rx="6" fill="#96C" width="',(":6 + (8 * {:)`(0:) @.(0-:{:)$ y),'" height="',(":14 + 18 *  */@:}:@:$ y),'" fill-opacity="1"></rect><rect overflow="visible" ');('rx="6" ',(* +/ $ y){::'fill="#777"';'fill="#444"');'" width="';(6 + (8 * {:)`(0:) @.(0-:{:)$ y);'" height="';(14 + 18 *  */@:}:@:$ y);'">',tt,'</rect>',anim,'</g>' end.
@@ -102,7 +100,7 @@ lc=:,@:(-.&a:each)@:<"1@:(-.&a:each)@:((13;10)&(+/\.@:(+./@:(=/)-E.)</.])"1)
 unb=:(mask (#^:_1)!.(<a:) ,)
 
 litsvg=: 4 : 0 NB. literal case
-'s b'=. x
+'s b'=. x NB. s is flag for symbol label type b is whether contents are within a box structure
 if. b do. yc=.,.(msk=.a:~: ,lit) # rsfiy lit=. boxutf y 
           lit=. ,-.&a: each <"1 -.&a: lit [ xw=.  msk # , xw [xc=.,. msk # , 0&,@}:@(+/\)"1 xw=.(9.59 + s * 2) * >(((0.5+1.5*FM)"_)`1:`((0.5+1.5*FM)"_)`#@.( 15 26 31 I. {.))each lit 
       else. yc=.,.( ([ S:0 (# each each lit) ) # (18 * _1 |.!.0 +/\)) @:;@: (;@:(}: , >:@:;each@:{:) each) @: (+/@:((10;13)e.{:) each each) lit=. unb lc boxutf y 
@@ -131,7 +129,7 @@ NB.glfontextent_jgl2_ FONT,' 12' NB. sets fontspec for glqextent in wuf
 wuf=: 19.18"_ NB.(9.59 * (* * 7&>. % 7:) @: (1&>.) @: {. @: glqextent_jgl2_ @: ":)
 
 unisvg=: 4 : 0 NB. unicode case
-'s b'=. ({.,{:) x 
+'s b'=. ({.,{:) x NB. s is flag for symbol label type b is whether contents are within a box structure
 if. b do. yc=. ,. (msk=.a:~: ,uni2) # rsfiy uni2=. boxuni y
           xc=.,. msk # , 0&,@}:@(+/\)"1 xw=.(># each   uni2) *  ,/"1 >(((9.59 * 0.5+1.5*FM)"_)`(9.59 *1:)`((9.59 *0.5+1.5*FM)"_)`(wuf@(7&u:)@,)@.( 15 26 31 I. {.))each uni2  
           uni21=. ,-.&a: each <"1 -.&a: uni2 [ xwv=. ": ,. xw=. msk # ; xw 
@@ -148,7 +146,7 @@ if. s do. (21.5+ >./  xw +&, xc);(32 + (18 * ({: ; uni2) e. 10;13)+{: ,yc); tm
 )
 
 vnisvg=: 4 : 0 NB. unicode4 case
-'s b'=. ({.,{:) x
+'s b'=. ({.,{:) x NB. s is flag for symbol label type b is whether contents are within a box structure
 if. b do. yc=. ,. (msk=.a:~: ,uni4) # rsfiy  uni4=.  boxuni y 
           xc=. ,. msk # , 0&,@}:@ (+/\)"1 xw=.(> # each uni4) * ,/"1 >(((9.59 * 0.5+1.5*FM)"_)`(9.59 *1:)`((9.59 *0.5+1.5*FM)"_)`(wuf@(7&u:)@,)@.( 15 26 31 I. {.))each uni4  
           uni41=. ,-.&a: each <"1 -.&a: uni4 [ xwv=. ": ,. xw=. msk # ; xw
@@ -165,7 +163,7 @@ if. s do. (21.5+ >./  xw +&, xc);(32 + (18 * ({: ; uni4) e. 10;13)+{: ,yc); tm
 )
 
 symsvg=: 4 : 0 NB. Symbols case: calls on litsvg, unisvg and vnisvg as needed to evaluate the labels. s flag ensures correct return of label format
-'s b'=. ({.,{:) x
+'s b'=. ({.,{:) x NB. s is flag for symbol label type b is whether contents are within a box structure
 ysvg=.  (1;0)&vg each 5 s: y 
 bW=.8 + >./ bw +&, bx=. }:@(0 , +/\)"1 bw=.>./  >, <"1 [ 0 {::"1  >ysvg 
 bh=. (1&>.@:{:@:$ y) # >./^:(2&<:@:#@:$)^:_  >./"1 [ 1 {::"1 > ysvg NB. >./^:(1&<:@:#@:$) swapped with , if the exception of 2 dimensions is covered
@@ -180,7 +178,7 @@ tm=. ": each '<svg  x="4" y="8">';"1  tm ,"1<'</svg>'
 )
 
 bxsvg=: 4 : 0 NB. boxed cases - sends contents of boxes through vg and boxes those results
-'s b'=. ({.,{:) x   
+'s b'=. ({.,{:) x  NB. s is flag for symbol label type b is whether contents are within a box structure 
 bW=.16 + bw +&{: bx=. }: 0 , +/\  <: bw=.>./  > , <"1 [ 3 {::"1  ysvg=.  vg&> y 
 bh=. (1&>.@:{:@:$ y) # >./^:(2&<:@:#@:$)^:_  >./"1 [ 5 {::"1 ysvg NB. >./^:(1&<:@:#@:$) swapped with , if the exception of 2 dimensions is covered
 bH=.32 + bh +&{: by=. (1&>.@:{:@:$y)&# , (mask y) ({."1@:([ # +/\ @:(0&,)@:}:@:(#!.20^:_1)))  >, <"1($y)$ <: bh  
