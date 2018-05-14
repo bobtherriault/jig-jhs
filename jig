@@ -1,4 +1,5 @@
 NB. Version 2.0 for this add on - pure SVG tested and running for JHS
+NB. Caution - Requires revision of input_jhs_ and output_jhs to allow display to be integrated into the jhs IDE
  
 coerase <'jig'NB. clear previous jig variables, helps in updates
 cocurrent'jig' NB. Set the defining locale as jig
